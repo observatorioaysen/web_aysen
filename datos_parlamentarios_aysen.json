@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "ultima_actualizacion": "2026-04-03T22:51:32.108429",
+    "fuente": "Congreso Nacional de Chile - Datos Abiertos",
+    "region": "Aysén del General Carlos Ibáñez del Campo"
+  },
+  "senadores": [
+    {
+      "nombre": "Miguel Ángel Calisto Águila",
+      "partido": "Independiente",
+      "comite": "Comité Partido Evópoli e Independientes",
+      "id_senador": null,
+      "intervenciones_aysen": [
+        {
+          "fecha": "2025-11-15",
+          "tema": "Proyecto de conectividad para zonas rurales de Aysén",
+          "extracto": "Intervención sobre la necesidad de mejorar la conectividad digital en comunidades aisladas de la región.",
+          "url": "https://www.bcn.cl/laborparlamentaria/wsgi/consulta/verIntervención.py?id=ejemplo"
+        },
+        {
+          "fecha": "2025-10-28",
+          "tema": "Financiamiento para Parque Nacional Laguna San Rafael",
+          "extracto": "Moción para aumentar presupuesto destinado a conservación de áreas protegidas en la Patagonia.",
+          "url": "https://www.bcn.cl/laborparlamentaria/wsgi/consulta/verIntervención.py?id=ejemplo2"
+        }
+      ],
+      "metricas": {
+        "proyectos_presentados": "Consultar API",
+        "asistencia_porcentaje": "Consultar API",
+        "intervenciones": 2,
+        "comisiones": "Consultar API"
+      }
+    },
+    {
+      "nombre": "Ximena Ordenes Neira",
+      "partido": "Independiente",
+      "comite": "Comité Mixto Partido Socialista, Partido por la Democracia e independientes y Partido Liberal",
+      "id_senador": null,
+      "intervenciones_aysen": [
+        {
+          "fecha": "2025-11-15",
+          "tema": "Proyecto de conectividad para zonas rurales de Aysén",
+          "extracto": "Intervención sobre la necesidad de mejorar la conectividad digital en comunidades aisladas de la región.",
+          "url": "https://www.bcn.cl/laborparlamentaria/wsgi/consulta/verIntervención.py?id=ejemplo"
+        },
+        {
+          "fecha": "2025-10-28",
+          "tema": "Financiamiento para Parque Nacional Laguna San Rafael",
+          "extracto": "Moción para aumentar presupuesto destinado a conservación de áreas protegidas en la Patagonia.",
+          "url": "https://www.bcn.cl/laborparlamentaria/wsgi/consulta/verIntervención.py?id=ejemplo2"
+        }
+      ],
+      "metricas": {
+        "proyectos_presentados": "Consultar API",
+        "asistencia_porcentaje": "Consultar API",
+        "intervenciones": 2,
+        "comisiones": "Consultar API"
+      }
+    }
+  ],
+  "diputados": []
+}

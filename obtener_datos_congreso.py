@@ -2,13 +2,24 @@
 """
 Script para obtener datos de parlamentarios de Aysén desde las APIs del Congreso Nacional de Chile
 Genera un archivo JSON con métricas actualizadas que puede ser consumido por la página web
+
+Uso:
+  python obtener_datos_congreso.py              # Ejecutar una vez
+  python obtener_datos_congreso.py --watch      # Ejecutar en bucle (cada 6 horas por defecto)
+  python obtener_datos_congreso.py --watch --interval 3600  # Cada hora
 """
 
+import sys
 import requests
 import json
+import time
+import argparse
 from datetime import datetime
 from typing import Dict, List
 import xml.etree.ElementTree as ET
+
+# Forzar UTF-8 en la consola (necesario en Windows)
+sys.stdout.reconfigure(encoding='utf-8')
 
 # IDs conocidos de parlamentarios de Aysén (necesitan verificación)
 PARLAMENTARIOS_AYSEN = {
@@ -268,44 +279,63 @@ def generar_datos_json():
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(datos_exportacion, f, ensure_ascii=False, indent=2)
     
-    print(f"\n✓ Datos exportados a: {output_file}")
+    print(f"\n[OK] Datos exportados a: {output_file}")
     print(f"  - {len(datos_exportacion['senadores'])} senadores procesados")
     print(f"  - {len(datos_exportacion['diputados'])} diputados procesados")
     
     return output_file
 
 
-def main():
+def ejecutar_ciclo():
     """
-    Función principal
+    Ejecuta un ciclo completo de recolección y exportación de datos.
+    Retorna True si tuvo éxito, False si hubo error.
     """
     print("=" * 60)
     print("FISCALIZACIÓN LEGISLATIVA - REGIÓN DE AYSÉN")
-    print("Recolección de datos del Congreso Nacional")
+    print(f"Inicio: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
     print()
-    
+
     try:
-        archivo_generado = generar_datos_json()
-        
-        print("\n" + "=" * 60)
-        print("PRÓXIMOS PASOS:")
-        print("=" * 60)
-        print(f"1. Revisa el archivo generado: {archivo_generado}")
-        print("2. Puedes usar estos datos en la página web")
-        print("3. Para integración completa, necesitarás:")
-        print("   - Obtener IDs oficiales de senadores de Aysén")
-        print("   - Implementar consultas específicas a APIs del Senado")
-        print("   - Configurar endpoints para métricas detalladas")
-        print("\nRecursos:")
-        print("  - API Cámara: https://www.camara.cl/transparencia/datosAbiertos.aspx")
-        print("  - Datos Abiertos: https://opendata.congreso.cl")
-        print("  - BCN Labor Parlamentaria: https://www.bcn.cl/laborparlamentaria")
-        
+        generar_datos_json()
+        print(f"\n[OK] Ciclo completado a las {datetime.now().strftime('%H:%M:%S')}")
+        return True
     except Exception as e:
-        print(f"\n❌ Error durante la ejecución: {e}")
+        print(f"\n[ERROR] Error durante la ejecucion: {e}")
         import traceback
         traceback.print_exc()
+        return False
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Recolector de datos parlamentarios de Aysén"
+    )
+    parser.add_argument(
+        "--watch",
+        action="store_true",
+        help="Ejecutar en bucle continuo, actualizando el JSON periódicamente"
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=6 * 3600,  # 6 horas por defecto
+        help="Intervalo en segundos entre actualizaciones (default: 21600 = 6 horas)"
+    )
+    args = parser.parse_args()
+
+    if args.watch:
+        horas = args.interval / 3600
+        print(f"Modo watch activado — actualizando cada {horas:.1f} hora(s)")
+        print("Presiona Ctrl+C para detener.\n")
+        while True:
+            ejecutar_ciclo()
+            proxima = datetime.fromtimestamp(time.time() + args.interval)
+            print(f"Próxima actualización: {proxima.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            time.sleep(args.interval)
+    else:
+        ejecutar_ciclo()
 
 
 if __name__ == "__main__":
