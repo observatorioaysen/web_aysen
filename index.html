@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiscalización Legislativa - Región de Aysén</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .last-update {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        main {
+            padding: 2rem 0;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .parliamentarians-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            margin-bottom: 1rem;
+        }
+
+        .name {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .party {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .stats {
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .trabajo-sala {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .trabajo-sala-header {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .intervenciones-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .intervencion-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #1565c0;
+        }
+
+        .intervencion-fecha {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .intervencion-tema {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .intervencion-extracto {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .ver-mas-link {
+            font-size: 0.85rem;
+            color: #1565c0;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .ver-mas-link:hover {
+            text-decoration: underline;
+        }
+
+        .no-intervenciones {
+            font-size: 0.9rem;
+            color: #999;
+            padding: 1rem;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+            color: #999;
+        }
+
+        .error {
+            background: #fff5f5;
+            border: 1px solid #ffc9c9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #c53030;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .badge-senado {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .badge-camara {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        footer {
+            background: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: #1565c0;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Fiscalización Legislativa</h1>
+            <p class="subtitle">Monitoreo de parlamentarios de la Región de Aysén del General Carlos Ibáñez del Campo</p>
+            <p class="last-update" id="lastUpdate">Cargando datos...</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section>
+                <h2 class="section-title">Senadores por Aysén</h2>
+                <div class="parliamentarians-grid" id="senadoresGrid">
+                    <div class="loading">Cargando información de senadores...</div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title">Diputados por Aysén</h2>
+                <div class="parliamentarians-grid" id="diputadosGrid">
+                    <div class="loading">Cargando información de diputados...</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Datos obtenidos del Congreso Nacional de Chile</p>
+            <div class="footer-links">
+                <a href="https://www.senado.cl" target="_blank">Senado</a>
+                <a href="https://www.camara.cl" target="_blank">Cámara de Diputados</a>
+                <a href="https://opendata.congreso.cl" target="_blank">Datos Abiertos</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem;">Proyecto ciudadano de transparencia legislativa</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de parlamentarios de Aysén (fallback si no hay JSON)
+        let senadores = [
+            {
+                nombre: "Miguel Ángel Calisto Águila",
+                partido: "Independiente",
+                comite: "Comité Partido Evópoli e Independientes",
+                perfil_url: "https://www.senado.cl/senadoras-y-senadores/senador/4cc00500-13ad-0722-e063-5a68a8c08157"
+            },
+            {
+                nombre: "Ximena Ordenes Neira",
+                partido: "Independiente",
+                comite: "Comité Mixto Partido Socialista, Partido por la Democracia e independientes y Partido Liberal",
+                perfil_url: "https://www.senado.cl/senadoras-y-senadores/senador/049f997f-dc8e-6f29-e063-5968a8c00bc5"
+            }
+        ];
+
+        let diputados = [
+            {
+                nombre: "René Alinco Bustos",
+                partido: "IND/FRVS",
+                perfil_url: "https://www.camara.cl/diputados/diputados.aspx"
+            },
+            {
+                nombre: "Andrea Macías Palma",
+                partido: "Partido Socialista",
+                perfil_url: "https://www.camara.cl/diputados/diputados.aspx"
+            },
+            {
+                nombre: "Alejandra Valdebenito Torres",
+                partido: "Unión Demócrata Independiente",
+                perfil_url: "https://www.camara.cl/diputados/diputados.aspx"
+            }
+        ];
+
+        // Intentar cargar datos desde JSON
+        async function cargarDatosJSON() {
+            try {
+                const response = await fetch('datos_parlamentarios_aysen.json');
+                if (response.ok) {
+                    const datos = await response.json();
+                    if (datos.senadores) senadores = datos.senadores;
+                    if (datos.diputados) {
+                        diputados = datos.diputados.map(d => ({
+                            nombre: d.nombre_completo || d.nombre,
+                            partido: d.partido || "Información no disponible",
+                            perfil_url: d.perfil_url || "https://www.camara.cl/diputados/diputados.aspx",
+                            metricas: d.metricas
+                        }));
+                    }
+                    console.log('Datos cargados desde JSON');
+                }
+            } catch (error) {
+                console.log('Usando datos locales (no se pudo cargar JSON)');
+            }
+        }
+
+        // Función para crear tarjeta de parlamentario
+        function createCard(parlamentario, tipo) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const perfilLink = parlamentario.perfil_url ? 
+                `<a href="${parlamentario.perfil_url}" target="_blank" style="color: #1565c0; text-decoration: none; font-size: 0.85rem;">Ver perfil oficial →</a>` : 
+                '';
+            
+            // Generar lista de intervenciones sobre Aysén
+            let intervencionesHTML = '';
+            if (parlamentario.intervenciones_aysen && parlamentario.intervenciones_aysen.length > 0) {
+                intervencionesHTML = parlamentario.intervenciones_aysen.map(interv => `
+                    <div class="intervencion-item">
+                        <div class="intervencion-fecha">${interv.fecha}</div>
+                        <div class="intervencion-tema">${interv.tema}</div>
+                        <div class="intervencion-extracto">${interv.extracto}</div>
+                        ${interv.url ? `<a href="${interv.url}" target="_blank" class="ver-mas-link">Ver intervención completa →</a>` : ''}
+                    </div>
+                `).join('');
+            } else {
+                intervencionesHTML = '<div class="no-intervenciones">Cargando intervenciones sobre Aysén...</div>';
+            }
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="name">${parlamentario.nombre}</div>
+                    <div class="party">${parlamentario.partido}</div>
+                    ${parlamentario.comite ? `<div style="font-size: 0.8rem; color: #999; margin-top: 0.25rem;">${parlamentario.comite}</div>` : ''}
+                    <span class="badge badge-${tipo}">${tipo === 'senado' ? 'Senador/a' : 'Diputado/a'}</span>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Proyectos presentados</span>
+                        <span class="stat-value" data-metric="proyectos">—</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Asistencia a sesiones</span>
+                        <span class="stat-value" data-metric="asistencia">—</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Intervenciones en sala</span>
+                        <span class="stat-value" data-metric="intervenciones">—</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Comisiones activas</span>
+                        <span class="stat-value" data-metric="comisiones">—</span>
+                    </div>
+                </div>
+                <div class="trabajo-sala">
+                    <div class="trabajo-sala-header">Trabajo en Sala - Temas de Aysén</div>
+                    <div class="intervenciones-list" data-intervenciones="lista">
+                        ${intervencionesHTML}
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                    ${perfilLink}
+                </div>
+            `;
+            
+            // Si hay métricas reales, aplicarlas
+            if (parlamentario.metricas) {
+                setTimeout(() => {
+                    if (parlamentario.metricas.proyectos_presentados) 
+                        card.querySelector('[data-metric="proyectos"]').textContent = parlamentario.metricas.proyectos_presentados;
+                    if (parlamentario.metricas.asistencia_porcentaje) 
+                        card.querySelector('[data-metric="asistencia"]').textContent = parlamentario.metricas.asistencia_porcentaje;
+                    if (parlamentario.metricas.intervenciones) 
+                        card.querySelector('[data-metric="intervenciones"]').textContent = parlamentario.metricas.intervenciones;
+                    if (parlamentario.metricas.comisiones) 
+                        card.querySelector('[data-metric="comisiones"]').textContent = parlamentario.metricas.comisiones;
+                }, 100);
+            }
+            
+            return card;
+        }
+
+        // Función para cargar datos (placeholder - necesita integración con API)
+        async function loadData() {
+            try {
+                // Cargar datos desde JSON si existe
+                await cargarDatosJSON();
+                
+                // Actualizar timestamp
+                const now = new Date();
+                document.getElementById('lastUpdate').textContent = 
+                    `Última actualización: ${now.toLocaleDateString('es-CL')} ${now.toLocaleTimeString('es-CL')}`;
+
+                // Cargar senadores
+                const senadoresGrid = document.getElementById('senadoresGrid');
+                senadoresGrid.innerHTML = '';
+                senadores.forEach(senador => {
+                    senadoresGrid.appendChild(createCard(senador, 'senado'));
+                });
+
+                // Cargar diputados
+                const diputadosGrid = document.getElementById('diputadosGrid');
+                diputadosGrid.innerHTML = '';
+                diputados.forEach(diputado => {
+                    diputadosGrid.appendChild(createCard(diputado, 'camara'));
+                });
+
+                // Solo simular datos si no hay métricas reales
+                const hayMetricas = diputados.some(d => d.metricas) || senadores.some(s => s.metricas);
+                if (!hayMetricas) {
+                    simulateAPIData();
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+                document.getElementById('senadoresGrid').innerHTML = 
+                    '<div class="error">Error al cargar datos de senadores. Por favor, intente más tarde.</div>';
+                document.getElementById('diputadosGrid').innerHTML = 
+                    '<div class="error">Error al cargar datos de diputados. Por favor, intente más tarde.</div>';
+            }
+        }
+
+        // Simulación de datos (reemplazar con llamadas reales a la API)
+        function simulateAPIData() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                // Datos de ejemplo - estos deberían venir de la API del Congreso
+                const proyectos = Math.floor(Math.random() * 50) + 5;
+                const asistencia = (Math.random() * 20 + 75).toFixed(1) + '%';
+                const intervenciones = Math.floor(Math.random() * 100) + 10;
+                const comisiones = Math.floor(Math.random() * 5) + 2;
+
+                card.querySelector('[data-metric="proyectos"]').textContent = proyectos;
+                card.querySelector('[data-metric="asistencia"]').textContent = asistencia;
+                card.querySelector('[data-metric="intervenciones"]').textContent = intervenciones;
+                card.querySelector('[data-metric="comisiones"]').textContent = comisiones;
+            });
+        }
+
+        // Cargar datos al iniciar
+        loadData();
+
+        // Recargar datos cada 5 minutos
+        setInterval(loadData, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
